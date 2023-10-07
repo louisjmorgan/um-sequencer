@@ -36,8 +36,8 @@ const Sequencer = (getCurrentTime, options = {}) => {
     _events.sort((a, b) => a.time - b.time)
 
     // For each event, get the delta time since the previous event.
-    _deltas = _events.map(
-      ({ time, callback }, i, arr) => (i === 0 ? time : time - arr[i - 1].time)
+    _deltas = _events.map(({ time, callback }, i, arr) =>
+      i === 0 ? time : time - arr[i - 1].time
     )
   }
 
@@ -71,10 +71,11 @@ const Sequencer = (getCurrentTime, options = {}) => {
 
     // If we are at the loop point, move it to the first note.
     _nextEventIndex = loop ? 0 : _nextEventIndex + 1
-    _nextEventTime += secsFromWholeNotes(_deltas[_nextEventIndex])
+    _nextEventTime = _deltas[_nextEventIndex]
   }
 
-  const secsFromWholeNotes = (whns) => whns * (240 / _tempo)
+  // const secsFromWholeNotes = (whns) => whns * (240 / _tempo)
+  const secsFromWholeNotes = (whns) => whns
 
   //// Clock ///////////////////////////////////////////////////////////////////
 
@@ -153,7 +154,7 @@ const Sequencer = (getCurrentTime, options = {}) => {
 
     // Schedule the first event.
     const { startTime = getCurrentTime() + _lookahead } = options
-    _nextEventTime = startTime + secsFromWholeNotes(_deltas[0])
+    _nextEventTime = startTime + _deltas[0]
 
     startClock()
   }
